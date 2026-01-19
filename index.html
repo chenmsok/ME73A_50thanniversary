@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>成大62(1973)級機械甲班 畢業50週年同學會紀念</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700;900&family=Noto+Sans+TC:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a2a3a;
+            --accent: #c0392b;
+            --gold: #d4af37;
+            --light-gold: #f4e4bc;
+            --bg-paper: #fdfcf0;
+            --shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        body, html {
+            margin: 0; padding: 0;
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: var(--bg-paper);
+            color: #333; line-height: 1.9;
+            scroll-behavior: smooth;
+            overflow-x: hidden; /* 防止水平捲動條 */
+        }
+
+        .container { width: 90%; max-width: 800px; margin: 0 auto; }
+
+        /* 啟動覆蓋層 */
+        #overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, #2c3e50 0%, #000 100%);
+            z-index: 10000; display: flex; justify-content: center; align-items: center;
+            color: white; text-align: center; transition: opacity 0.6s ease;
+        }
+        .start-btn {
+            padding: 15px 40px; font-size: 1.3rem; cursor: pointer;
+            background: var(--gold); border: none; border-radius: 50px;
+            font-weight: bold; color: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        /* 懸浮音樂開關 */
+        #musicToggle {
+            position: fixed; bottom: 30px; right: 20px; 
+            width: 50px; height: 50px; border-radius: 50%;
+            background: rgba(26, 42, 58, 0.8); color: var(--gold);
+            border: 2px solid var(--gold);
+            display: none; justify-content: center; align-items: center;
+            font-size: 1.5rem; cursor: pointer; z-index: 9999;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+        }
+        #musicToggle:active { transform: scale(0.9); }
+
+        /* 影片彈窗 (修正手機超出畫面問題) */
+        #videoModal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.98); z-index: 10005; 
+            justify-content: center; align-items: center;
+            padding: 0; margin: 0;
+        }
+        .video-content { 
+            position: relative; 
+            width: 95%; /* 手機上佔 95% 寬度 */
+            max-width: 900px; /* 電腦上最大 900px */
+            aspect-ratio: 16/9; 
+            background: #000;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+        }
+        .close-video-btn {
+            position: absolute; top: -50px; right: 0; 
+            padding: 10px 20px;
+            background: var(--accent); color: white; border: 2px solid white; border-radius: 5px; 
+            z-index: 10006; font-size: 0.9rem; font-weight: bold; cursor: pointer;
+        }
+
+        section { padding: 50px 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
+
+        h2 { 
+            font-family: 'Noto Serif TC'; font-size: 1.8rem; color: var(--accent); 
+            text-align: center; margin-bottom: 25px; font-weight: 900;
+        }
+        h3 { 
+            font-family: 'Noto Serif TC'; font-size: 1.4rem; color: var(--primary); 
+            margin-top: 20px; font-weight: 700; text-align: center;
+        }
+
+        .poem-text {
+            font-family: 'Noto Serif TC'; font-size: 1.5rem; color: var(--primary);
+            border-top: 2px solid var(--gold); border-bottom: 2px solid var(--gold);
+            padding: 20px 0; text-align: center; display: block; margin-bottom: 30px; font-weight: 700;
+        }
+
+        /* 相簿網格系統：手機預設一排一張 (大圖) */
+        .gallery { 
+            display: grid; grid-template-columns: 1fr; gap: 20px; margin-top: 20px; 
+        }
+        @media (min-width: 768px) {
+            .gallery { grid-template-columns: 1fr 1fr; /* 電腦版改回一排兩張 */ }
+        }
+
+        .gallery-item { border-radius: 8px; overflow: hidden; box-shadow: var(--shadow); background: #fff; }
+        .gallery-item img { width: 100%; height: auto; display: block; }
+        
+        .single-img { width: 100%; border-radius: 10px; box-shadow: var(--shadow); margin-bottom: 20px; }
+
+        .desc-text {
+            font-size: 1.1rem; text-align: justify; margin-bottom: 20px; color: #333;
+        }
+        
+        .highlight-box {
+            background: rgba(212, 175, 55, 0.1); padding: 25px; border-radius: 15px; 
+            border-left: 5px solid var(--gold); text-align: justify; margin-bottom: 20px;
+        }
+
+        .note-text {
+            font-size: 1rem; color: #666; font-style: italic; background: #f4f4f4; 
+            padding: 15px; border-radius: 8px; margin-top: 15px; text-align: justify;
+        }
+
+        .video-card {
+            background: white; border-radius: 15px; padding: 25px; 
+            box-shadow: var(--shadow); margin-bottom: 30px;
+        }
+        .play-button {
+            background: var(--accent); color: white; border: none; padding: 12px 30px;
+            border-radius: 50px; font-weight: bold; margin-top: 15px; width: 100%; cursor: pointer; font-size: 1.1rem;
+        }
+
+        footer { background: #eee; color: #666; padding: 40px 20px; text-align: center; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <div id="overlay" onclick="startExperience()">
+        <div>
+            <h1>成大62(1973)級機械甲班<br>畢業50週年同學會紀念</h1>
+            <p>點擊開啟回憶之旅</p>
+            <button class="start-btn">開始播放</button>
+        </div>
+    </div>
+
+    <div id="musicToggle" onclick="toggleMusic()">🔊</div>
+
+    <div id="videoModal">
+        <div class="video-content">
+            <button class="close-video-btn" onclick="closeVideo()">✖ 關閉影片</button>
+            <iframe id="videoPlayer" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen style="width:100%; height:100%;"></iframe>
+        </div>
+    </div>
+
+    <audio id="bgm" src="音樂_前.m4a" preload="auto" loop></audio>
+
+    <section id="section1">
+        <div class="container">
+            <div class="poem-text">五十年前 因起同窗義<br>五十年後 緣聚阿里情</div>
+            <img src="ppt1.jpg" class="single-img">
+            <p style="text-align: right; color: #999; font-style: italic;">(15秒後自動翻頁)</p>
+        </div>
+    </section>
+
+    <section id="section2">
+        <div class="container">
+            <h2>半世紀的約定：阿里山之巔的輝煌重逢</h2>
+            <div class="highlight-box" style="background: var(--light-gold); border: 1px solid var(--gold);">
+                <strong>「成大62(1973)級機械系甲班」</strong>畢業五十週年同學會，於 2023 年 11 月 12 日盛大開啟。我們相約在雲海環繞的<strong>阿里山</strong>，展開了為期兩天、洗滌心靈的重逢之旅。<br><br>
+                11 月 12 日當晚，來自海內外的同窗及眷屬共55位下榻歷史悠久的<strong>「阿里山賓館」</strong>。在這座見證無數時光交錯的典雅建築內，我們舉行了隆重的<strong>畢業 50 週年紀念晚會</strong>。這不僅是一場歡聚，更是五十載歲月淬煉出的真情見證。<br><br>
+                <span style="color: var(--primary); font-weight: bold;">以下為當晚令人難忘的程序安排：</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="section3">
+        <div class="container">
+            <h2>晚會程序</h2>
+            <img src="ppt2.jpg" class="single-img">
+        </div>
+    </section>
+
+    <section id="section4">
+        <div class="container">
+            <h2>會場入口及精緻點心</h2>
+            <p class="desc-text">我們在阿里山賓館細心籌備，入口處的歡迎告示與寬敞的空間安排及精緻茶點，等待著老同學們的到來。</p>
+            <div class="gallery">
+                <div class="gallery-item"><img src="1.jpg"></div>
+                <div class="gallery-item"><img src="2.jpg"></div>
+                <div class="gallery-item"><img src="4.jpg"></div>
+                <div class="gallery-item"><img src="5.jpg"></div>
+                <div class="gallery-item"><img src="6.jpg"></div>
+                <div class="gallery-item"><img src="7.jpg"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="section5">
+        <div class="container">
+            <h2>重逢的喜悅：老同學陸續到場</h2>
+            <p class="desc-text">五十年的歲月，改變了容顏，卻不曾改變同窗的情誼。大家陸續抵達會場，歡笑聲此起彼落。見面的那一刻，是半世紀情誼的最美最真情見證。</p>
+            <div class="gallery">
+                <div class="gallery-item"><img src="8.jpg"></div>
+                <div class="gallery-item"><img src="9.jpg"></div>
+                <div class="gallery-item"><img src="10.jpg"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="section6">
+        <div class="container">
+            <h2>晚會盛大開場</h2>
+            <p class="desc-text">晚會由 <strong>陳明山</strong> 同學主持。在班長正式開場前，陳同學準備了三段充滿回憶、情感與趣味的影片，帶領我們進入時光隧道回味過去。</p>
+            <div class="gallery">
+                <div class="gallery-item"><img src="11.jpg"></div>
+                <div class="gallery-item"><img src="12.jpg"></div>
+                <div class="gallery-item"><img src="13.jpg"></div>
+                <div class="gallery-item"><img src="14.jpg"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="section7">
+        <div class="container">
+            <h2>影片欣賞</h2>
+            <div class="video-card">
+                <h3>第一片：迎賓慶重逢</h3>
+                <p class="desc-text">以2023/4月阿茂來高雄，大家在高雄圓山歡聚為背景，表達此次50週年同學會之迎賓慶重逢。</p>
+               <a href="https://www.youtube.com/watch?v=yw_t7XJ4tQ0" target="_blank" class="play-button" onclick="pauseBgm()">📺 前往 YouTube 觀看</a>
+            </div>
+           
+
+ <div class="video-card">
+                <h3>第二片：餘興樂表演</h3>
+                <p class="desc-text">回顧2019/1月六對伉儷的苗栗雪見泰雅之旅，營火晚會中角色扮演「泰雅婚禮」秀，於此充當餘興表演節目。</p>
+               <a href="https://www.youtube.com/watch?v=jA0sA-AKU2Y" target="_blank" class="play-button" onclick="pauseBgm()">📺 前往 YouTube 觀看</a>
+
+            </div>
+            <div class="video-card">
+
+
+         
+
+
+
+
+                <h3>第三片：往事珍回味</h3>
+                <p class="desc-text">大學四年與之後五十年來的同學互動往事，以及種種珍貴的靜、動態影像，皆是值得回憶回味、一看再看永以保存。</p>
+               <a href="https://youtu.be/I7vD6nruDs8 " target="_blank" class="play-button" onclick="pauseBgm()">📺 前往 YouTube 觀看</a>            </div>
+        </div>
+    </section>
+
+    <section id="section8">
+        <div class="container">
+            <h2>永遠的靈魂人物：班長開場</h2>
+            <img src="15.jpg" class="single-img" style="max-width: 500px; display: block; margin: 0 auto 30px;">
+            <p class="desc-text" style="font-size: 1.3rem; color: var(--primary); text-align: center; font-weight: bold;">緊接著，晚會迎來了最隆重的時刻。</p>
+            <div class="highlight-box">
+                這場橫跨五十載、震撼心弦的重逢盛會，背後有一位最重要的推手——我們那位<strong>出錢出力、慷慨解囊</strong>，且全心全意<strong>包辦全體同窗食宿行旅</strong>，對整場活動細節事必躬親、負責到底的靈魂人物。<br><br>
+                他不僅是<strong>勞苦功高</strong>的策劃者，更是大家心中那份情誼的守護者，是我們<strong>「永遠的班長」</strong>。因為有他的無私奉獻與熱情號召，才讓遠在各方的老友能齊聚阿里山。現在，讓我們以最誠摯的敬意與熱烈的掌聲，歡迎班長上台為我們正式開啟這段溫馨的序幕！
+            </div>
+            <div class="note-text">
+                <strong>【編者附記】</strong><br>
+                最感遺憾的是，縱使我們踏破鐵鞋，翻遍了當時所有拍攝紀錄者所留存的珍貴影像，卻僅能尋得這絕無僅有的一張班長身影。雖因影像有限，無法從各個角度全方位展現班長奔波操勞、英姿颯爽的每一瞬間，帶領這唯一的「定格」，卻承載了那兩天最厚重的情誼與回憶。<br>
+                (註：後續登場的幾位講者，亦因相同狀況，僅能以此類珍稀影像呈現，敬請各位老同學海涵見諒。)
+            </div>
+        </div>
+    </section>
+
+    <section id="section9">
+        <div class="container">
+            <h2>專題演講（一）：歲月的淬煉</h2>
+            <img src="16.jpg" class="single-img" style="max-width: 400px; display: block; margin: 0 auto 20px;">
+            <h3>陳茂強 同學：混50年後的心路歷程</h3>
+            <p class="desc-text">
+                陳茂強同學以「混50年後的心路歷程」為題，帶領我們回首半個世紀的風雨兼程。他的分享字字珠璣，既有智慧的沈澱，更有對同窗情誼的深刻感悟，讓在座每一位同學都彷彿在故事中看見了自己的身影。
+            </p>
+        </div>
+    </section>
+
+    <section id="section10">
+        <div class="container">
+            <h2>專題演講（二）：精彩的人生履歷</h2>
+            <img src="17.jpg" class="single-img" style="max-width: 500px; display: block; margin: 0 auto 30px;">
+            <h3>李進 同學：豐富經歷分享</h3>
+            <p class="desc-text">
+                李進同學則以其豐富的社會閱歷與專業背景，向大家傾囊相授多年來的精彩經歷。他的演說風采依舊，展現了成大機械人厚積薄發的精神，讓大家在重逢的喜悅中，更增添了一份對彼此成就的敬重與激賞。
+            </p>
+        </div>
+    </section>
+
+    <section id="appendix" style="background-color: #f4f1e6;">
+        <div class="container">
+            <div style="border: 1px solid var(--gold); padding: 25px; position: relative; border-radius: 10px;">
+                <span style="position: absolute; top: -15px; left: 20px; background: #f4f1e6; padding: 0 10px; color: var(--accent); font-weight: bold; font-size: 1.1rem;">編者再次附記</span>
+                <p class="desc-text" style="font-family: 'Noto Serif TC', serif;">
+                    <strong>「一圖抵萬語，孤影勝千言。」</strong><br>
+                    最感遺憾的是，籌備組縱使找遍了當時所有拍攝者留存的影像資料，卻發現關於班長及上述及以下幾位精彩講者的身影，在這麼多快門中竟皆僅能尋得這絕無僅有的<strong>唯一一張</strong>。<br><br>
+                    或許是當時大家的目光都太過專注於彼此的言談與神采，以至於快門跟不上感懷的速度。雖然這單薄的影像無法從多種角度全方位地展示班長勞苦功高的英姿，或是講者們生動的演說風采，但這<strong>唯一的定格</strong>，卻也因此凝聚了那晚最純粹的敬意。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="section11">
+        <div class="container">
+            <h2>盛況空前：全神貫注的共鳴時刻</h2>
+            <div style="border-left: 5px solid var(--gold); padding-left: 20px; background: rgba(0,0,0,0.03); padding: 20px; margin-bottom: 30px; border-radius: 0 10px 10px 0;">
+                <p class="desc-text">這是一場跨越半世紀的對話，更是一次心靈深處的<strong>強烈共振</strong>。</p>
+                <p class="desc-text">從晚會序幕拉開的那一刻起，偌大的會場座無虛席，氣氛莊重而熱烈。台上講者字字珠璣，細數往昔崢嶸；台下無論是白髮蒼蒼的老同學，還是攜手一生的夫人們，無不屏氣凝神、全神貫注地聆聽。</p>
+                <p class="desc-text" style="margin-bottom: 0;">那一雙雙專注的眼神，閃爍著對青春的回憶與對當下的珍惜。現場除了講者的聲音，幾乎聽不到一絲雜音，空氣中彷彿流動著一股無形的熱流，將台上台下的心緊緊相連。這種高度的凝聚力與投入感，正是成大62(1973)級機械甲班五十載同窗情誼最撼動人心的見證！</p>
+            </div>
+            <div class="gallery">
+                <div class="gallery-item"><img src="20.jpg"></div><div class="gallery-item"><img src="21.jpg"></div>
+                <div class="gallery-item"><img src="22.jpg"></div><div class="gallery-item"><img src="23.jpg"></div>
+                <div class="gallery-item"><img src="24.jpg"></div><div class="gallery-item"><img src="25.jpg"></div>
+                <div class="gallery-item"><img src="26.jpg"></div><div class="gallery-item"><img src="27.jpg"></div>
+                <div class="gallery-item"><img src="28.jpg"></div><div class="gallery-item"><img src="29.jpg"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="section12">
+        <div class="container">
+            <h2>自由欲言：同窗真情告白</h2>
+            <div class="video-card">
+                <img src="18.jpg" class="single-img" style="max-width: 500px; display: block; margin: 0 auto 30px;">
+                <h3>黃光武 同學</h3>
+                <p class="desc-text">黃光武同學侃侃而談，言談間流露出對歲月的豁達與對同窗的深情。他以細膩的視角回顧了當年的點滴與工作經歷，真誠的分享引發了全場強烈的共鳴，讓大家在笑聲中感受到那份沉澱了半世紀的溫暖。</p>
+            </div>
+            <div class="video-card">
+                <img src="19.jpg" class="single-img" style="max-width: 500px; display: block; margin: 0 auto 30px;">
+                <h3>郭應茂 同學</h3>
+                <p class="desc-text">郭應茂同學隨後上台，其熱忱與幽默不減當年。他用極具感染力的言詞，描述了這場阿里山重逢的不可思議與珍貴，字裡行間充滿了對同學會籌備團隊的感謝，也點燃了大家對未來再次相聚的無限憧憬。</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="section13">
+        <div class="container">
+            <h2>晚會終章：班長的深情結語</h2>
+            <p style="font-size: 1.3rem; color: var(--primary); text-align: center; font-weight: bold; margin-bottom: 30px;">「半世紀的守候，終在阿里山的星空下圓滿。」</p>
+            <div class="highlight-box" style="background: white; border-top: 5px solid var(--gold); border-left: none; box-shadow: var(--shadow);">
+                <p class="desc-text" style="font-family: 'Noto Serif TC', serif;">
+                    晚會接近尾聲，班長再次上台。此時的他，眼中閃爍的不僅是激動，更是對這份同窗情誼的無比欣慰。他代表全體同學，向這兩天的相聚留下了<strong>擲地有聲</strong>的結語。<br><br>
+                    班長感性地表示，五十年的歲月雖然帶走了我們的青春，卻帶不走這份刻骨銘心的同窗情感。他感謝每一位同學不遠千里而來，正是大家的熱情參與，才成就了這次無與倫比的壯舉。這段結語，不僅是對晚會的總結，更是班長對大家<strong>「珍重再見，後會有期」</strong>的深情期許。<br><br>
+                    <strong>這是一個完美的句點，更是下一個精彩篇章的起點。</strong> 在班長鏗鏘有力的話語中，晚會的氣氛達到了最高潮，那份感動將永遠鐫刻在每位成大62(1973)級機械甲班同學的心中。<br><br>
+                    <strong>接下來，最後就是世紀大合唱...</strong>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="section14" style="background: linear-gradient(180deg, #1a2a3a 0%, #0d161f 100%); color: #fdfcf0;">
+        <div class="container">
+            <h2 style="color: var(--gold); text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);">世紀合唱：曲終情未散 —《萍聚》</h2>
+            <div class="video-card" style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--gold); padding: 30px; text-align: center;">
+                <h3 style="color: var(--light-gold);">世紀大合唱影音紀錄</h3>
+                <img src="30.jpg" class="single-img" style="margin: 20px 0;">
+
+               <a href="https://youtu.be/hF_IenO7PdI" target="_blank" class="play-button" onclick="pauseBgm()">📺 前往 YouTube 觀看</a>
+
+
+                           </div>
+            
+            <div style="margin-top: 50px;">
+                <h3 style="color: var(--gold); border-bottom: 2px solid var(--gold); display: inline-block; padding-bottom: 10px;">五十載緣份的深情註腳</h3>
+                <p class="desc-text" style="color: #ddd; line-height: 2; margin-top: 20px;">
+                    如果說，五十年前的相識，是命運偶然的「緣起」；那麼五十年後的阿里山重逢，便是我們用半生歲月換來的「圓滿」。<br><br>
+                    晚會的尾聲，全體同學肩並肩，合唱這首屬於我們那個年代的《萍聚》。歌詞裡唱著「別管以後將如何結束」，但此刻我們心裡都明白，這不是結束，而是另一段情誼的延續。<br><br>
+                    從開場時對青春的回眸，到此刻歌聲中的淚光閃爍，這首大合唱將兩天一夜的歡聚凝聚成永恆。我們或許又要各奔東西，回到各自的生活軌道，但「只要我們曾經擁有過，對你我來講已經足夠」。
+                </p>
+            </div>
+
+            <div style="background: rgba(0,0,0,0.3); padding: 30px; border-radius: 15px; text-align: center; margin-top: 40px;">
+                <h3 style="color: var(--light-gold); font-family: 'Noto Serif TC', serif;">《萍 聚》</h3>
+                <div style="font-family: 'Noto Serif TC', serif; line-height: 2.4; color: #eee; font-size: 1.1rem;">
+                    別管以後將如何結束 至少我們曾經相聚<br>不必費心地彼此約束 更不需要言語的承諾<br><br>
+                    只要我們曾經擁有過 對你我來講已經足夠<br>人的一生有許多回憶 只願你的追憶有個我
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 60px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.1);">
+                <p style="font-size: 1.5rem; color: var(--gold); font-weight: bold; letter-spacing: 3px;">成大62(1973)級機械甲班 · 友誼長存</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>國立成功大學機械工程學系 62(1973)級甲班<br>畢業50週年同學會紀念 &copy; 2023 阿里山賓館</p>
+    </footer>
+
+    <script>
+        const bgm = document.getElementById('bgm');
+        const modal = document.getElementById('videoModal');
+        const player = document.getElementById('videoPlayer');
+        const musicToggle = document.getElementById('musicToggle');
+        
+        function startExperience() {
+            document.getElementById('overlay').style.opacity = '0';
+            setTimeout(() => { document.getElementById('overlay').style.display = 'none'; }, 600);
+            
+            bgm.play();
+            musicToggle.style.display = 'flex';
+
+            setTimeout(() => {
+                const sec2 = document.getElementById('section2');
+                window.scrollTo({ top: sec2.offsetTop, behavior: 'smooth' });
+            }, 15000);
+
+            setTimeout(() => {
+                let fadeInterval = setInterval(() => {
+                    if (bgm.volume > 0.5) {
+                        bgm.volume = Math.max(0.5, bgm.volume - 0.01);
+                    } else {
+                        clearInterval(fadeInterval);
+                    }
+                }, 100);
+            }, 120000);
+        }
+
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                bgm.pause();
+                musicToggle.innerText = '🔇';
+            }
+        });
+
+        function toggleMusic() {
+            if (bgm.paused) {
+                bgm.play();
+                musicToggle.innerText = '🔊';
+            } else {
+                bgm.pause();
+                musicToggle.innerText = '🔇';
+            }
+        }
+
+        function openVideo(url) {
+            bgm.pause();
+            musicToggle.innerText = '🔇';
+            player.src = url;
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeVideo() {
+            modal.style.display = 'none';
+            player.src = "";
+            document.body.style.overflow = 'auto';
+            bgm.play();
+            musicToggle.innerText = '🔊';
+        }
+    </script>
+</body>
+</html>
