@@ -155,7 +155,7 @@
         <div class="container">
             <div class="poem-text">五十年前 因起同窗義<br>五十年後 緣聚阿里情</div>
             <img src="ppt1.jpg" class="single-img">
-            <p style="text-align: right; color: #999; font-style: italic;">(15秒後自動翻頁)</p>
+           <!-- <p style="text-align: right; color: #999; font-style: italic;">(15秒後自動翻頁)</p>-->
         </div>
     </section>
 
@@ -400,10 +400,10 @@
             bgm.play();
             musicToggle.style.display = 'flex';
 
-            setTimeout(() => {
-                const sec2 = document.getElementById('section2');
-                window.scrollTo({ top: sec2.offsetTop, behavior: 'smooth' });
-            }, 15000);
+            //setTimeout(() => {
+            //    const sec2 = document.getElementById('section2');
+           //     window.scrollTo({ top: sec2.offsetTop, behavior: 'smooth' });
+           // }, 15000);
 
             setTimeout(() => {
                 let fadeInterval = setInterval(() => {
