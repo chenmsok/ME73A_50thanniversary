@@ -385,88 +385,104 @@
         <p>國立成功大學機械工程學系 62(1973)級甲班<br>畢業50週年同學會紀念 &copy; 2023 阿里山賓館</p>
     </footer>
 
-    <script>
+   <script>
         const bgm = document.getElementById('bgm');
-        const modal = document.getElementById('videoModal');
-        const player = document.getElementById('videoPlayer');
         const musicToggle = document.getElementById('musicToggle');
-        
+
+        // 設定合適的背景音樂音量 (30%)
+        bgm.volume = 0.3;
+
+        // 音樂播完即停止，不重複播放，並更新按鈕圖示
+        bgm.onended = function() {
+            musicToggle.innerText = '🔇';
+        };
+
+        // 點擊「開始播放」時觸發
         function startExperience() {
             document.getElementById('overlay').style.opacity = '0';
             setTimeout(() => { document.getElementById('overlay').style.display = 'none'; }, 600);
             
-            bgm.play();
+            bgm.play().catch(e => console.log("等待使用者互動播放音樂"));
             musicToggle.style.display = 'flex';
-
-            //setTimeout(() => {
-            //    const sec2 = document.getElementById('section2');
-           //     window.scrollTo({ top: sec2.offsetTop, behavior: 'smooth' });
-           // }, 15000);
-
-            setTimeout(() => {
-                let fadeInterval = setInterval(() => {
-                    if (bgm.volume > 0.5) {
-                        bgm.volume = Math.max(0.5, bgm.volume - 0.01);
-                    } else {
-                        clearInterval(fadeInterval);
-                    }
-                }, 100);
-            }, 120000);
-        }
-
-document.addEventListener('visibilitychange', function() {
-    if (document.hidden) {
-        // 當使用者切換到 YouTube 分頁時，自動暫停音樂（記錄當前時間點）
-        if (!bgm.paused) {
-            bgm.pause();
-            bgm.dataset.wasPlaying = "true";
-        }
-    } else {
-        // 當使用者看完影片返回此頁面時，若剛才是在播放狀態，則繼續播放音樂
-        if (bgm.dataset.wasPlaying === "true") {
-            bgm.play();
             musicToggle.innerText = '🔊';
-            bgm.dataset.wasPlaying = "false";
+
+            // 標記已經點擊過開始播放
+            sessionStorage.setItem('hasStarted', 'true');
         }
-    }
-});
 
+        // 當點擊 YouTube 影片連結時呼叫：記錄當前頁面捲動位置與音樂播放時間
+        function pauseBgm() {
+            sessionStorage.setItem('scrollPos', window.scrollY);
+            sessionStorage.setItem('bgmTime', bgm.currentTime);
+            sessionStorage.setItem('wasPlaying', !bgm.paused);
+            bgm.pause();
+        }
 
+        // 頁面載入時檢查是否是從 YouTube 返回
+        window.addEventListener('DOMContentLoaded', () => {
+            const hasStarted = sessionStorage.getItem('hasStarted');
+            const scrollPos = sessionStorage.getItem('scrollPos');
+            const bgmTime = sessionStorage.getItem('bgmTime');
+            const wasPlaying = sessionStorage.getItem('wasPlaying');
 
+            // 如果先前已經開始過（代表是看完影片返回）
+            if (hasStarted === 'true') {
+                // 1. 直接隱藏「開始播放」遮罩
+                const overlay = document.getElementById('overlay');
+                if (overlay) overlay.style.display = 'none';
+                musicToggle.style.display = 'flex';
 
+                // 2. 還原之前的捲動高度（回到看影片的位置）
+                if (scrollPos) {
+                    window.scrollTo(0, parseInt(scrollPos));
+                }
 
-     //   
-    //    document.addEventListener('visibilitychange', function() {
-    //        if (document.hidden) {
-   //             bgm.pause();
-   //             musicToggle.innerText = '🔇';
-  //          }
-  //      });
+                // 3. 還原音樂播放時間並嘗試接續播放
+                if (bgmTime) {
+                    bgm.currentTime = parseFloat(bgmTime);
+                }
 
+                if (wasPlaying === 'true') {
+                    bgm.play().then(() => {
+                        musicToggle.innerText = '🔊';
+                    }).catch(err => {
+                        // 若手機瀏覽器攔截自動發聲，提示點擊音樂按鈕繼續
+                        musicToggle.innerText = '🔇';
+                    });
+                }
+            }
+        });
+
+        // 處理切換頁面/分頁時的音量與播放邏輯
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                if (!bgm.paused) {
+                    bgm.pause();
+                    sessionStorage.setItem('wasPlaying', 'true');
+                    sessionStorage.setItem('bgmTime', bgm.currentTime);
+                }
+            } else {
+                if (sessionStorage.getItem('wasPlaying') === 'true') {
+                    bgm.play().then(() => {
+                        musicToggle.innerText = '🔊';
+                    }).catch(e => {
+                        musicToggle.innerText = '🔇';
+                    });
+                }
+            }
+        });
+
+        // 右下角音樂按鈕手動開關
         function toggleMusic() {
             if (bgm.paused) {
                 bgm.play();
                 musicToggle.innerText = '🔊';
+                sessionStorage.setItem('wasPlaying', 'true');
             } else {
                 bgm.pause();
                 musicToggle.innerText = '🔇';
+                sessionStorage.setItem('wasPlaying', 'false');
             }
-        }
-
-        function openVideo(url) {
-            bgm.pause();
-            musicToggle.innerText = '🔇';
-            player.src = url;
-            modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeVideo() {
-            modal.style.display = 'none';
-            player.src = "";
-            document.body.style.overflow = 'auto';
-            bgm.play();
-            musicToggle.innerText = '🔊';
         }
     </script>
 </body>
