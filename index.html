@@ -414,12 +414,34 @@
             }, 120000);
         }
 
-        document.addEventListener('visibilitychange', function() {
-            if (document.hidden) {
-                bgm.pause();
-                musicToggle.innerText = '🔇';
-            }
-        });
+document.addEventListener('visibilitychange', function() {
+    if (document.hidden) {
+        // 當使用者切換到 YouTube 分頁時，自動暫停音樂（記錄當前時間點）
+        if (!bgm.paused) {
+            bgm.pause();
+            bgm.dataset.wasPlaying = "true";
+        }
+    } else {
+        // 當使用者看完影片返回此頁面時，若剛才是在播放狀態，則繼續播放音樂
+        if (bgm.dataset.wasPlaying === "true") {
+            bgm.play();
+            musicToggle.innerText = '🔊';
+            bgm.dataset.wasPlaying = "false";
+        }
+    }
+});
+
+
+
+
+
+     //   
+    //    document.addEventListener('visibilitychange', function() {
+    //        if (document.hidden) {
+   //             bgm.pause();
+   //             musicToggle.innerText = '🔇';
+  //          }
+  //      });
 
         function toggleMusic() {
             if (bgm.paused) {
