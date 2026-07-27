@@ -150,8 +150,8 @@
         </div>
     </div>
 
-    <audio id="bgm" src="音樂_前.m4a" preload="auto" loop></audio>
-
+<!--    <audio id="bgm" src="音樂_前.m4a" preload="auto" loop></audio>  -->
+<audio id="bgm" src="音樂_前.m4a" preload="auto" onloadedmetadata="this.volume=0.2;"></audio>
     <section id="section1">
         <div class="container">
             <div class="poem-text">五十年前 因起同窗義<br>五十年後 緣聚阿里情</div>
@@ -390,8 +390,8 @@
         const bgm = document.getElementById('bgm');
         const musicToggle = document.getElementById('musicToggle');
 
-        // 設定合適的背景音樂音量 (30%)
-        bgm.volume = 0.3;
+        // 設定合適的背景音樂音量 (15%)
+        bgm.volume = 0.15;
 
         // 音樂播完即停止，不重複播放，並更新按鈕圖示
         bgm.onended = function() {
@@ -402,7 +402,7 @@
         function startExperience() {
             document.getElementById('overlay').style.opacity = '0';
             setTimeout(() => { document.getElementById('overlay').style.display = 'none'; }, 600);
-            bgm.volume = 0.3; // 將背景音樂預設音量調低至 30%         
+            bgm.volume = 0.15; // 將背景音樂預設音量調低至 15%         
             bgm.play().catch(e => console.log("等待使用者互動播放音樂"));
             musicToggle.style.display = 'flex';
             musicToggle.innerText = '🔊';
