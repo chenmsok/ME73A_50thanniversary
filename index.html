@@ -402,7 +402,7 @@
         function startExperience() {
             document.getElementById('overlay').style.opacity = '0';
             setTimeout(() => { document.getElementById('overlay').style.display = 'none'; }, 600);
-            
+            bgm.volume = 0.3; // 將背景音樂預設音量調低至 30%         
             bgm.play().catch(e => console.log("等待使用者互動播放音樂"));
             musicToggle.style.display = 'flex';
             musicToggle.innerText = '🔊';
